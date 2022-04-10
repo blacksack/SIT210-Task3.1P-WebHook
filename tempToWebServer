@@ -1,0 +1,27 @@
+#include <Adafruit_DHT.h>
+#include "Particle.h"
+
+#define DHTTYPE DHT11                       //assign DHT Sensor Type 
+#define DHTPIN A4                           //assign Sensor to PIN
+
+DHT dht(DHTPIN, DHTTYPE);
+
+
+void setup()
+{
+    dht.begin();
+}
+
+
+
+void loop()
+{
+    delay(500);
+    
+    float temperature = dht.getTempCelcius();                                   //assign float variable "temperature" to the sensor reading for Temperature in Celcuis
+    
+    Particle.publish("temp", String::format("%.2f", temperature), PRIVATE);     //webhook; "temp" is the trigger, we are then converting "float temperature" to a String with a decimal value of .2, "PRIVATE" ensures
+                                                                                //that the event will only appear on our private event stream
+    
+    delay(30000);                                                               //anything less than a 15second delay results in some "nan" values being sent to ThingSpeak(web server)
+}
