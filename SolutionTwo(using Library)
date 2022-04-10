@@ -1,0 +1,31 @@
+#include <ThingSpeak.h>
+#include <Adafruit_DHT.h>
+
+TCPClient client;
+
+unsigned long myChannelNumber = ENTERNUMBER;
+const char * myWriteAPIKey = "1234abcd"; 
+
+#define DHTTYPE DHT11                       //assign DHT Sensor Type 
+#define DHTPIN A4                           //assign Sensor to PIN
+
+DHT dht(DHTPIN, DHTTYPE);
+
+
+void setup()
+{
+    ThingSpeak.begin(client);
+    dht.begin();
+}
+
+
+
+void loop()
+{
+    delay(500);
+    
+    float temperature = dht.getTempCelcius();                                   //assign float variable "temperature" to the sensor reading for Temperature in Celcius
+    
+    ThingSpeak.writeField(myChannelNumber, 1, temperature, myWriteAPIKey);
+    delay(30000);
+}
